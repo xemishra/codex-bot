@@ -1,0 +1,11 @@
+.env
+*.pyc
+__pycache__/
+venv/
+.envrc
+.idea/
+.DS_Store
+.vscode/
+env/
+asyncio
+os

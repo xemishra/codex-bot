@@ -9,6 +9,7 @@ from aiogram.types import Message
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from dotenv import load_dotenv
+from internal import db
 
 load_dotenv()
 
@@ -27,7 +28,7 @@ async def send_welcome(message: Message) -> None:
 
 async def main() -> None:
     token = os.getenv("TELEGRAM_API_KEY")
-
+    await db.init_db()
     if type(token) is not str:
         print("Error: TELEGRAM_API_KEY environment variable is not set.")
         return

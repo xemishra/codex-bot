@@ -1,0 +1,80 @@
+import requests
+from bs4 import BeautifulSoup
+from internal import logger, Config
+from datetime import datetime
+from models import User
+
+# header file
+headers = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                  "AppleWebKit/537.36 (KHTML, like Gecko) "
+                  "Chrome/120.0.0.0 Safari/537.36",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.9",
+    "Accept-Encoding": "gzip, deflate, br",
+    "Connection": "keep-alive",
+    "Upgrade-Insecure-Requests": "1",
+    "Referer": "https://www.google.com/",
+    "DNT": "1",
+    "Cache-Control": "no-cache",
+    "Pragma": "no-cache"
+}
+
+async def login(user_id: int, username: str, password: str, message):
+    """creating a new user in database"""
+    logger.info(f"User - {user_id} Started Login...")
+    session = requests.Session()
+    try:
+        response = session.get(f"{Config().baseUrl}/account/login", headers=headers, timeout=10)
+        response.raise_for_status()
+        soup = BeautifulSoup(response.text, "html.parser")
+        tokeninput = soup.find("input", {"name": "__RequestVerificationToken"})
+        token = tokeninput["values"] if tokeninput else None
+        if not token:
+            await message.reply(
+                "The bot encountered an error while processing your request.\nPlease try again!\nIf the issue persists even after retrying, you may report it by using the /start command and selecting Report Issue from the menu."
+            )
+            logger.error("Could not find CSRF token. Check the form or page structure.")
+            return None
+        payload = {
+            "email": username,
+            "password": password,
+            "__RequestVerificationToken": token,
+            "ReturnUrl": "", # can be None
+        }
+        loginresponse = session.post(f"{Config().baseUrl}/account/login", data=payload, headers=headers)
+        loginresponse.raise_for_status()
+        if "logout" in loginresponse.text.lower() or "dashboard" in loginresponse.text.lower():
+            pfresponse = session.get(f"{Config().baseUrl}/StudentProfile/StudentProfileUpdateRequest", headers=headers)
+            pfresponse.raise_for_status()
+            soup = BeautifulSoup(pfresponse.text, "html.parser")
+            details = {}
+            for div in soup.select(".student-content, .Parent-content"):
+                spans = div.find_all("span")
+                if len(spans) >= 2:
+                    key = spans[0].get_text(strip=True).replace(" :", "")
+                    value = spans[1].get_text(strip=True)
+                    details[key] = value
+            await User.create(
+                telegram_id=user_id,
+                student_name=details.get('Student Name', 'N/A'),
+                roll_number=details.get('Enrollemnt No', 'N/A'),
+                branch = details.get('Program Name', 'N/A'),
+                session = details.get("Session Name", "N/A"),
+                created_at = datetime.now().strftime('%Y-%m-%d'),
+            )
+            logger.info(f"User - {user_id} Logged in successfully.")
+        else:
+            await message.reply(
+                "Login failed. Please verify your Username and Password and try again."
+            )
+            logger.error(
+        f"Login failed. Invalid credentials or token issue for user - User ID: {user_id}"
+            )
+            return None
+    except requests.RequestException as e:
+        await message.reply(
+            "The bot encountered an error while processing your request.\nPlease try again!\nIf the issue persists even after retrying, you may report it by using the /start command and selecting Report Issue from the menu.",
+            )
+        logger.error(f"Network error encountered: {e}")
+        return None

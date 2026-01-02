@@ -1,41 +1,29 @@
 #!env python3
-
 import asyncio
-import os
-
-from aiogram import Bot, Dispatcher, html
-from aiogram.filters import CommandStart
-from aiogram.types import Message
-from aiogram.client.default import DefaultBotProperties
-from aiogram.enums import ParseMode
 from dotenv import load_dotenv
-from internal import db
+from internal import db, logger
+from internal.config import Config
+from aiogram.filters import Command
+from aiogram import Bot, Dispatcher
+from aiogram.enums import ParseMode
+from plugins import start_handler
+from aiogram.client.default import DefaultBotProperties
 
 load_dotenv()
 
-
 dp = Dispatcher()
 
-
-async def create_app():
-    pass
-
-
-@dp.message(CommandStart())
-async def send_welcome(message: Message) -> None:
-    await message.answer(f"Hello! I'm your friendly bot. {html.bold('Welcome!')}")
-
+# Registers all the function to handle incoming Telegram messages that use the command.
+dp.message.register(start_handler, Command(commands=["start"]))
 
 async def main() -> None:
-    token = os.getenv("TELEGRAM_API_KEY")
     await db.init_db()
-    if type(token) is not str:
-        print("Error: TELEGRAM_API_KEY environment variable is not set.")
+    config = Config()
+    if not config.botApi:
+        logger.error("Missing botApi environment variable")
         return
-
-    bot = Bot(token, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+    bot = Bot(config.botApi, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
     await dp.start_polling(bot)
-
 
 if __name__ == "__main__":
     asyncio.run(main())

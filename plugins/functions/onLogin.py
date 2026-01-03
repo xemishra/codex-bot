@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 from internal import logger, Config
 from datetime import datetime
 from models import User
+from .dashBoard import dashboard
 
 # header file
 headers = {
@@ -32,7 +33,7 @@ async def login(user_id: int, username: str, password: str, message):
         token = tokeninput["values"] if tokeninput else None
         if not token:
             await message.reply(
-                "The bot encountered an error while processing your request.\nPlease try again!\nIf the issue persists even after retrying, you may report it by using the /start command and selecting Report Issue from the menu."
+                text="The bot encountered an error while processing your request.\nPlease try again!\nIf the issue persists even after retrying, you may report it by using the /start command and selecting Report Issue from the menu."
             )
             logger.error("Could not find CSRF token. Check the form or page structure.")
             return None
@@ -64,9 +65,10 @@ async def login(user_id: int, username: str, password: str, message):
                 created_at = datetime.now().strftime('%Y-%m-%d'),
             )
             logger.info(f"User - {user_id} Logged in successfully.")
+            await dashboard(user_id, message)
         else:
             await message.reply(
-                "Login failed. Please verify your Username and Password and try again."
+                text="Login failed. Please verify your Username and Password and try again."
             )
             logger.error(
         f"Login failed. Invalid credentials or token issue for user - User ID: {user_id}"
@@ -74,7 +76,7 @@ async def login(user_id: int, username: str, password: str, message):
             return None
     except requests.RequestException as e:
         await message.reply(
-            "The bot encountered an error while processing your request.\nPlease try again!\nIf the issue persists even after retrying, you may report it by using the /start command and selecting Report Issue from the menu.",
+            text="The bot encountered an error while processing your request.\nPlease try again!\nIf the issue persists even after retrying, you may report it by using the /start command and selecting Report Issue from the menu.",
             )
         logger.error(f"Network error encountered: {e}")
         return None

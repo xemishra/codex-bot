@@ -1,13 +1,18 @@
 from aiogram import types, html
 from internal import logger
-from plugins.functions import isuser
+from models import User
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from plugins.functions.dashBoard import dashboard
 
 async def start_handler(message: types.Message):
     """Handles the /start command when a user initiates the bot"""
     user_id = message.from_user.id
     logger.info(f"User - {user_id} Started the Bot.")
-    if not await isuser(user_id):
+    student = await User.get_or_none(telegram_id=user_id)
+    if student:
+        await dashboard(user_id, message)
+        return
+    else:
         keyboard = InlineKeyboardMarkup(
             inline_keyboard=[
                 [
@@ -41,4 +46,3 @@ Click the {html.bold("Help button")} below to explore available commands and fea
             parse_mode="html",
             disable_web_page_preview=True,
         )
-        return

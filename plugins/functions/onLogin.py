@@ -1,4 +1,5 @@
 import requests
+from aiogram import html
 from bs4 import BeautifulSoup
 from internal import logger, Config
 from datetime import datetime
@@ -31,10 +32,11 @@ async def login(username: str, password: str, message):
         response.raise_for_status()
         soup = BeautifulSoup(response.text, "html.parser")
         tokeninput = soup.find("input", {"name": "__RequestVerificationToken"})
-        token = tokeninput["values"] if tokeninput else None
+        token = tokeninput["value"] if tokeninput else None
         if not token:
             await message.answer(
-                text="The bot encountered an error while processing your request.\nPlease try again!\nIf the issue persists even after retrying, you may report it by using the /start command and selecting Report Issue from the menu."
+                text=f"The bot encountered an error while processing your request.\nPlease try again!\nIf the issue persists even after retrying, you may report it by using the /start command and selecting {html.bold('Report Issue')} from the menu.",
+                parse_mode="html",
             )
             logger.error("Could not find CSRF token. Check the form or page structure.")
             return None
@@ -63,24 +65,21 @@ async def login(username: str, password: str, message):
                 roll_number=details.get('Enrollemnt No', 'N/A'),
                 branch = details.get('Program Name', 'N/A'),
                 session = details.get("Session Name", "N/A"),
-                created_at = datetime.now().strftime('%Y-%m-%d'),
                 student_mail = details.get('EmailID', 'N/A'),
             )
-            msg = await message.answer("Processing your request...")
             logger.info(f"User - {user_id} Logged in successfully.")
-            await dashboard(message)
-            await msg.delete()
+            await dashboard(user_id, message)
         else:
             await message.answer(
-                text="Login failed. Please verify your Username and Password and try again."
+                text=f"Login failed. Please verify your {html.bold('Username')} and {html.bold('Password')} and try again.",
+                parse_mode="html",
             )
-            logger.error(
-        f"Login failed. Invalid credentials or token issue for user - User ID: {user_id}"
-            )
+            logger.error(f"Login failed. Invalid credentials or token issue for user - User ID: {user_id}")
             return None
     except requests.RequestException as e:
         await message.answer(
-            text="The bot encountered an error while processing your request.\nPlease try again!\nIf the issue persists even after retrying, you may report it by using the /start command and selecting Report Issue from the menu.",
+            text=f"The bot encountered an error while processing your request.\nPlease try again!\nIf the issue persists even after retrying, you may report it by using the /start command and selecting {html.bold('Report Issue')} from the menu.",
+            parse_mode="html",
             )
         logger.error(f"Network error encountered: {e}")
         return None

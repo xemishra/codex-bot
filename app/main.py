@@ -3,7 +3,7 @@ import asyncio
 from dotenv import load_dotenv
 from internal import db, logger
 from internal.config import Config
-from aiogram import Bot, Dispatcher, F
+from aiogram import Bot, Dispatcher
 from aiogram.enums import ParseMode
 from aiogram.client.default import DefaultBotProperties
 from plugins.callbacks import login_router

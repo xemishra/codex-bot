@@ -7,6 +7,7 @@ from plugins.functions.dashBoard import dashboard
 
 router = Router()
 
+# Inline keyboard
 keyboard = InlineKeyboardMarkup(
     inline_keyboard=[
         [
@@ -33,15 +34,15 @@ async def start_handler(message: types.Message):
     logger.info(f"User - {user_id} Started the Bot.")
     student = await User.filter(telegram_id=user_id).exists()
     if student:
-        await dashboard(message)
+        await dashboard(user_id, message)
         return
     else:
         text = (
             f"Hey, {message.from_user.first_name}!\n\n"
-            f"Welcome to the Official {html.bold("St. Andrews College")} CodeX Club Management Bot.\n\n"
+            f"Welcome to the Official {html.bold('St. Andrews College')} CodeX Club Management Bot.\n\n"
             "Your smart digital companion designed to streamline CodeX Club activities and enhance your learning experience. Stay updated with announcements, events, workshops, and resources, while managing club participation seamlessly, all from one unified platform.\n\n"
             "Remain informed, stay connected, and grow your technical skills through an organized and secure club ecosystem.\n\n"
-            f"Click the {html.bold("Help button")} below to explore available commands and features."
+            f"Click the {html.bold('Help button')} below to explore available commands and features."
         )
         await message.answer(
             text=text,

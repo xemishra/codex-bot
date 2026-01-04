@@ -21,8 +21,8 @@ btn = InlineKeyboardMarkup(
         ]
     )
 
-async def dashboard(message):
-    user_id = message.from_user.id
+async def dashboard(user_id, message):
+    """Fetching User's Dashboard"""
     student = await User.get_or_none(telegram_id=user_id)
     student_name = student.student_name
     roll_number = student.roll_number
@@ -32,7 +32,7 @@ async def dashboard(message):
     text = (
         f"Hey, {student_name}\n\n"
         "Welcome to your dashboard!\n\n"
-        f"{html.bold("Profile:")}\n"
+        f"{html.bold('Profile:')}\n"
         f"Roll Number: {roll_number}\n"
         f"Branch: {branch}\n"
         f"Session: {session}\n"

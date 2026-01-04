@@ -1,5 +1,6 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from models import User
+from aiogram import html
 
 async def dashboard(user_id, message):
     student = await User.get_or_none(telegram_id=user_id)
@@ -7,7 +8,7 @@ async def dashboard(user_id, message):
     roll_number = student.roll_number
     branch = student.branch
     session = student.session
-    acd = student.created_at
+    created_at = student.created_at
     btn = InlineKeyboardMarkup(
         inline_keyboard=[
             [
@@ -28,7 +29,17 @@ async def dashboard(user_id, message):
     )
     await message.reply(
         text=f"""
-        
+Hey, {student_name}
+
+Welcome to your dashboard!
+
+{html.bold("Profile:")}
+Roll Number: {roll_number}
+Branch: {branch}
+Session: {session}
+Profile Created On: {created_at}
+
+Manage your activities and stay connected with the club effortlessly.
         """,
         reply_markup=btn,
         parse_mode="html",

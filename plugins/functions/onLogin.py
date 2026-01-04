@@ -63,6 +63,7 @@ async def login(user_id: int, username: str, password: str, message):
                 branch = details.get('Program Name', 'N/A'),
                 session = details.get("Session Name", "N/A"),
                 created_at = datetime.now().strftime('%Y-%m-%d'),
+                student_mail = details.get('EmailID', 'N/A'),
             )
             logger.info(f"User - {user_id} Logged in successfully.")
             await dashboard(user_id, message)

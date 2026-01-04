@@ -1,1 +1,1 @@
-from .start import start_handler
+from .start import router as start_router

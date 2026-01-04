@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 from internal import logger, Config
 from datetime import datetime
 from models import User
-from .dashBoard import dashboard
+from plugins.functions.dashBoard import dashboard
 
 # header file
 headers = {
@@ -21,8 +21,9 @@ headers = {
     "Pragma": "no-cache"
 }
 
-async def login(user_id: int, username: str, password: str, message):
+async def login(username: str, password: str, message):
     """creating a new user in database"""
+    user_id = message.from_user.id
     logger.info(f"User - {user_id} Started Login...")
     session = requests.Session()
     try:
@@ -32,7 +33,7 @@ async def login(user_id: int, username: str, password: str, message):
         tokeninput = soup.find("input", {"name": "__RequestVerificationToken"})
         token = tokeninput["values"] if tokeninput else None
         if not token:
-            await message.reply(
+            await message.answer(
                 text="The bot encountered an error while processing your request.\nPlease try again!\nIf the issue persists even after retrying, you may report it by using the /start command and selecting Report Issue from the menu."
             )
             logger.error("Could not find CSRF token. Check the form or page structure.")
@@ -65,10 +66,12 @@ async def login(user_id: int, username: str, password: str, message):
                 created_at = datetime.now().strftime('%Y-%m-%d'),
                 student_mail = details.get('EmailID', 'N/A'),
             )
+            msg = await message.answer("Processing your request...")
             logger.info(f"User - {user_id} Logged in successfully.")
-            await dashboard(user_id, message)
+            await dashboard(message)
+            await msg.delete()
         else:
-            await message.reply(
+            await message.answer(
                 text="Login failed. Please verify your Username and Password and try again."
             )
             logger.error(
@@ -76,7 +79,7 @@ async def login(user_id: int, username: str, password: str, message):
             )
             return None
     except requests.RequestException as e:
-        await message.reply(
+        await message.answer(
             text="The bot encountered an error while processing your request.\nPlease try again!\nIf the issue persists even after retrying, you may report it by using the /start command and selecting Report Issue from the menu.",
             )
         logger.error(f"Network error encountered: {e}")

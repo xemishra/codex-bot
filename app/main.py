@@ -3,18 +3,19 @@ import asyncio
 from dotenv import load_dotenv
 from internal import db, logger
 from internal.config import Config
-from aiogram.filters import Command
-from aiogram import Bot, Dispatcher
+from aiogram import Bot, Dispatcher, F
 from aiogram.enums import ParseMode
-from plugins import start_handler
 from aiogram.client.default import DefaultBotProperties
+from plugins.callbacks import login_router
+from plugins import start_router
 
 load_dotenv()
 
 dp = Dispatcher()
 
 # Registers all the function to handle incoming Telegram messages that use the command.
-dp.message.register(start_handler, Command(commands=["start"]))
+dp.include_router(start_router)
+dp.include_router(login_router)
 
 async def main() -> None:
     await db.init_db()

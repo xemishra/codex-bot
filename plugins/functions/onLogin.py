@@ -2,9 +2,9 @@ import requests
 from aiogram import html
 from bs4 import BeautifulSoup
 from internal import logger, Config
-from datetime import datetime
 from models import User
 from plugins.functions.dashBoard import dashboard
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 # header file
 headers = {
@@ -22,6 +22,14 @@ headers = {
     "Pragma": "no-cache"
 }
 
+loginBtn = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [
+            InlineKeyboardButton(text='Login', callback_data='btn_login')
+        ]
+    ]
+)
+
 async def login(username: str, password: str, message):
     """creating a new user in database"""
     user_id = message.from_user.id
@@ -36,6 +44,7 @@ async def login(username: str, password: str, message):
         if not token:
             await message.answer(
                 text=f"The bot encountered an error while processing your request.\nPlease try again!\nIf the issue persists even after retrying, you may report it by using the /start command and selecting {html.bold('Report Issue')} from the menu.",
+                reply_markup=loginBtn,
                 parse_mode="html",
             )
             logger.error("Could not find CSRF token. Check the form or page structure.")
@@ -72,6 +81,7 @@ async def login(username: str, password: str, message):
         else:
             await message.answer(
                 text=f"Login failed. Please verify your {html.bold('Username')} and {html.bold('Password')} and try again.",
+                reply_markup=loginBtn,
                 parse_mode="html",
             )
             logger.error(f"Login failed. Invalid credentials or token issue for user - User ID: {user_id}")
@@ -79,6 +89,7 @@ async def login(username: str, password: str, message):
     except requests.RequestException as e:
         await message.answer(
             text=f"The bot encountered an error while processing your request.\nPlease try again!\nIf the issue persists even after retrying, you may report it by using the /start command and selecting {html.bold('Report Issue')} from the menu.",
+            reply_markup=loginBtn,
             parse_mode="html",
             )
         logger.error(f"Network error encountered: {e}")

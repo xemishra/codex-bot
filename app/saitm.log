@@ -1,0 +1,20 @@
+2026-01-04 20:59:25,523 - saitm - ERROR - Missing botApi environment variable
+2026-01-04 20:59:59,546 - saitm - INFO - User - 8132481394 Started the Bot.
+2026-01-04 20:59:59,548 - saitm - INFO - User - 8132481394 Started the Bot.
+2026-01-04 21:00:19,614 - saitm - INFO - User - 8132481394 Started Login...
+2026-01-04 21:00:21,295 - saitm - INFO - User - 8132481394 Logged in successfully.
+2026-01-04 21:01:09,810 - saitm - INFO - User - 8132481394 has been logged out successfully.
+2026-01-04 21:01:17,692 - saitm - INFO - User - 8132481394 Started the Bot.
+2026-01-04 21:02:33,922 - saitm - INFO - User - 8132481394 Started Login...
+2026-01-04 21:02:36,055 - saitm - ERROR - Login failed. Invalid credentials or token issue for user - User ID: 8132481394
+2026-01-04 21:02:47,370 - saitm - INFO - User - 8132481394 Started Login...
+2026-01-04 21:02:48,548 - saitm - INFO - User - 8132481394 Logged in successfully.
+2026-01-04 21:02:54,798 - saitm - INFO - User - 8132481394 Started the Bot.
+2026-01-04 21:10:49,392 - saitm - INFO - Bot Stopped, Bye Bye!
+2026-01-12 23:12:00,267 - saitm - INFO - User - 8132481394 Started the Bot.
+2026-01-12 23:12:05,888 - saitm - INFO - User - 8132481394 has been logged out successfully.
+2026-01-12 23:12:07,429 - saitm - INFO - User - 8132481394 Started the Bot.
+2026-01-12 23:12:52,071 - saitm - INFO - User - 8132481394 Started Login...
+2026-01-12 23:12:53,542 - saitm - INFO - User - 8132481394 Logged in successfully.
+2026-01-12 23:13:06,817 - saitm - INFO - User - 8132481394 has been logged out successfully.
+2026-01-12 23:20:43,128 - saitm - INFO - Bot Stopped, Bye Bye!

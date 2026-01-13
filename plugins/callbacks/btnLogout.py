@@ -29,4 +29,5 @@ async def logout_btn(callback: types.CallbackQuery):
         reply_markup=loginBtn,
         parse_mode="html",
     )
+    await msg.delete()
     await callback.answer()

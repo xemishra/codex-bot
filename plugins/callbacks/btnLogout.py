@@ -8,6 +8,8 @@ router = Router()
 @router.callback_query(F.data == "btn_logout")
 async def logout_btn(callback: types.CallbackQuery):
     """Callback handler for btn_logout"""
+    if callback.message.chat.type != "private":
+        return  # Ignore the command in groups or channels
     msg = await callback.message.answer(
         text="Processing your request...",
         parse_mode="html",

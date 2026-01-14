@@ -6,8 +6,10 @@ from internal.config import Config
 from aiogram import Bot, Dispatcher
 from aiogram.enums import ParseMode
 from aiogram.client.default import DefaultBotProperties
-from plugins.callbacks import login_router, logout_router
-from plugins import start_router
+from plugins import (
+    login_router, logout_router, start_router, notify_router,
+    text_router
+)
 
 load_dotenv()
 
@@ -15,8 +17,10 @@ dp = Dispatcher()
 
 # Registers all the function to handle incoming Telegram messages that use the command.
 dp.include_router(start_router)
+dp.include_router(notify_router)
 dp.include_router(login_router)
 dp.include_router(logout_router)
+dp.include_router(text_router)
 
 async def main() -> None:
     await db.init_db()

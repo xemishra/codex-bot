@@ -1,1 +1,1 @@
-worker: bash install
+worker: bash install.sh

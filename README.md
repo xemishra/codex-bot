@@ -68,5 +68,5 @@ Pull requests are welcome for bug fixes, features, or documentation improvements
 Thanks to everyone who has contributed to the Codex Club Management Bot! Your support, code, ideas, and feedback make this project better every day.
 
 ## License:
-This project is licensed under the MIT License – see the [LICENSE](https://github.com/anas-codx/codex-bot/LICENSE)
+This project is licensed under the MIT License – see the LICENSE
 file for details.

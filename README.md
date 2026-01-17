@@ -1,7 +1,5 @@
 <h2 align="center"><b>CodeX Club Bot</b></h2>
 
-<h3 align="center">Streamlining SAITM Codex Club activities through Telegram.</h3>
-
 ## Installation:
  - Clone the repository:  
 ```bash
